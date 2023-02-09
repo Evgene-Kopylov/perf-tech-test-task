@@ -52,19 +52,29 @@ impl Field {
         }
     }
 
+    fn move_to(&mut self, pos: Vec2) {
+        if self.bulbs.iter().filter(
+            |&bulb| bulb.pos == pos
+        ).collect::<Vec<&Bulb>>().len() == 0 {
+            self.bulbs.push(Bulb::new(pos))
+        }
+    }
+
     fn expand(&mut self) {
         for i in 0..self.bulbs.len() {
             if self.bulbs[i].new {
+
                 let right_pos = Vec2::new(self.bulbs[i].pos.x + 1., self.bulbs[i].pos.y);
-                if self.bulbs.iter().filter(|&bulb| bulb.pos == right_pos).collect::<Vec<&Bulb>>().len() == 0 {
-                    self.bulbs.push(Bulb::new(right_pos))
-                }
+                self.move_to(right_pos);
 
                 let left_pos = Vec2::new(self.bulbs[i].pos.x - 1., self.bulbs[i].pos.y);
-                if self.bulbs.iter().filter(|&bulb| bulb.pos == left_pos).collect::<Vec<&Bulb>>().len() == 0 {
-                    self.bulbs.push(Bulb::new(left_pos))
-                }
+                self.move_to(left_pos);
 
+                let up_pos = Vec2::new(self.bulbs[i].pos.x, self.bulbs[i].pos.y + 1.);
+                self.move_to(up_pos);
+
+                let down_pos = Vec2::new(self.bulbs[i].pos.x, self.bulbs[i].pos.y - 1.);
+                self.move_to(down_pos);
             }
 
 
