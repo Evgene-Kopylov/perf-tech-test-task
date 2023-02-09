@@ -53,15 +53,24 @@ impl Field {
     }
 
     fn expand(&mut self) {
-        for bulb in self.bulbs.clone() {
-            let left_pos = Vec2::new(bulb.pos.x + 1., bulb.pos.y);
-            let bulbs = &self.bulbs;
+        for i in 0..self.bulbs.len() {
+            if self.bulbs[i].new {
+                let right_pos = Vec2::new(self.bulbs[i].pos.x + 1., self.bulbs[i].pos.y);
+                if self.bulbs.iter().filter(|&bulb| bulb.pos == right_pos).collect::<Vec<&Bulb>>().len() == 0 {
+                    self.bulbs.push(Bulb::new(right_pos))
+                }
 
-            if bulbs.iter().filter(|&bulb| bulb.pos == left_pos).collect::<Vec<&Bulb>>().len() == 0 {
-                self.bulbs.push(Bulb::new(left_pos))
+                let left_pos = Vec2::new(self.bulbs[i].pos.x - 1., self.bulbs[i].pos.y);
+                if self.bulbs.iter().filter(|&bulb| bulb.pos == left_pos).collect::<Vec<&Bulb>>().len() == 0 {
+                    self.bulbs.push(Bulb::new(left_pos))
+                }
+
             }
 
-            // TODO
+
+
+            self.bulbs[i].new = false;
+
         }
     }
 
