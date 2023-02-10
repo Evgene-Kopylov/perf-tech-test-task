@@ -29,13 +29,13 @@ impl Step {
         }
     }
 
-    pub fn draw(&self) {
+    pub fn draw(&self, color: Color) {
         draw_rectangle(
             self.pos.x - START_POS.x + 15.,
             self.pos.y - START_POS.y + 15.,
             SIDE,
             SIDE,
-            STEP_COLOR
+            color,
         );
     }
 }
@@ -104,8 +104,13 @@ impl Field {
 
     fn draw(&self) {
         for step in self.steps.iter() {
-            step.draw();
+            step.draw(STEP_COLOR);
         }
+
+        for step in self.front_line.iter() {
+            step.draw(GOLD);
+        }
+
     }
 
 }
