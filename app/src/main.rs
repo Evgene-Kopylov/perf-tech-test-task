@@ -8,8 +8,8 @@ const GROUND_COLOR: Color = Color::new(0.8, 0.8, 0.8, 1.00);
 const BULB_COLOR: Color = DARKGRAY;
 
 
-const SIDE: f32 = 2.;
-const START_POS: Vec2 = Vec2::new(10., 10.);
+const SIDE: f32 = 1.;
+const START_POS: Vec2 = Vec2::new(1000., 1000.);
 
 #[derive(Debug, Clone)]
 struct Bulb {
@@ -33,8 +33,8 @@ impl Bulb {
 
     pub fn draw(&self) {
         draw_rectangle(
-            self.pos.x,
-            self.pos.y,
+            self.pos.x - START_POS.x + 15.,
+            self.pos.y - START_POS.y + 15.,
             SIDE,
             SIDE,
             BULB_COLOR
@@ -52,10 +52,23 @@ impl Field {
         }
     }
 
+    fn sum_of_literal_digits(&self, pos: Vec2) -> f32 {
+        let x = (pos.x as i32).to_string();
+        let y = (pos.y as i32).to_string();
+        let xy = x + &y;
+        let mut s = 0.;
+        for c in xy.chars() {
+            s += c.to_string().parse::<f32>().unwrap() as f32;
+        }
+        s as f32
+    }
+
     fn move_to(&mut self, pos: Vec2) {
-        if self.bulbs.iter().filter(
+        let free_space = self.bulbs.iter().filter(
             |&bulb| bulb.pos == pos
-        ).collect::<Vec<&Bulb>>().len() == 0 {
+        ).collect::<Vec<&Bulb>>().len() == 0;
+
+        if free_space && self.sum_of_literal_digits(pos) < 26. {
             self.bulbs.push(Bulb::new(pos))
         }
     }
@@ -76,8 +89,6 @@ impl Field {
                 let down_pos = Vec2::new(self.bulbs[i].pos.x, self.bulbs[i].pos.y - 1.);
                 self.move_to(down_pos);
             }
-
-
 
             self.bulbs[i].new = false;
 
@@ -104,7 +115,9 @@ async fn main() {
         clear_background(GRAY);
 
         field.draw();
-
+        // if field.bulbs.len() > 16 {
+        //     break
+        // }
         next_frame().await
     }
 }
