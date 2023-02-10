@@ -4,24 +4,24 @@ use macroquad::prelude::*;
 use std::time::{Instant};
 
 
-const BULB_COLOR: Color = DARKGRAY;
+const STEP_COLOR: Color = DARKGRAY;
 const SIDE: f32 = 1.;
 const START_POS: Vec2 = Vec2::new(1000., 1000.);
 
 #[derive(Debug, Clone, Copy)]
-struct Bulb {
+struct Step {
     pos: Vec2,
     new: bool,
 }
 
 
 struct Field {
-    front_line: Vec<Bulb>,
-    bulbs: Vec<Bulb>,
+    front_line: Vec<Step>,
+    bulbs: Vec<Step>,
 }
 
 
-impl Bulb {
+impl Step {
     fn new(pos: Vec2) -> Self {
         Self {
             pos,
@@ -44,7 +44,7 @@ impl Bulb {
 impl Field {
     fn start(start_pos: Vec2) -> Self {
         let mut bulbs = Vec::new();
-        bulbs.push(Bulb::new(start_pos));
+        bulbs.push(Step::new(start_pos));
         Self {
             front_line: bulbs,
             bulbs: Vec::new(),
@@ -65,13 +65,13 @@ impl Field {
     fn move_to(&mut self, pos: Vec2) {
         let free_space = self.front_line.iter().filter(
             |&bulb| bulb.pos == pos
-        ).collect::<Vec<&Bulb>>().len() == 0;
+        ).collect::<Vec<&Step>>().len() == 0;
 
         let can_step_by_sum: bool = self.sum_of_literal_digits(pos) < 26.;
 
 
         if free_space && can_step_by_sum {
-            self.front_line.push(Bulb::new(pos))
+            self.front_line.push(Step::new(pos))
         }
     }
 
@@ -102,7 +102,7 @@ impl Field {
 
         self.front_line = self.front_line.iter().filter(
             |&bulb| bulb.new
-        ).map(|b| *b).collect::<Vec<Bulb>>();
+        ).map(|b| *b).collect::<Vec<Step>>();
 
 
         have_new
