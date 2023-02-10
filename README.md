@@ -1,4 +1,4 @@
-# per tech test task
+# perf tech test task
  тестовое задание на логику и вледение ЯП.
 
 ### Тестовое задание
