@@ -68,7 +68,9 @@ impl Field {
             |&bulb| bulb.pos == pos
         ).collect::<Vec<&Bulb>>().len() == 0;
 
-        if free_space && self.sum_of_literal_digits(pos) < 26. {
+        let can_step_by_sum: bool = self.sum_of_literal_digits(pos) < 26.;
+
+        if free_space && can_step_by_sum {
             self.bulbs.push(Bulb::new(pos))
         }
     }
@@ -110,18 +112,18 @@ impl Field {
 
 #[macroquad::main("breakout")]
 async fn main() {
-    let mut field = Field::start();
+    let mut field = Field::start(START_POS);
 
     loop {
         clear_background(GRAY);
 
+
         field.draw();
         let active = field.expand();
-        if !active {
-            println!("Результат: {}", field.bulbs.len());
 
-        } else {
-            next_frame().await
-        }
+        let total = format!("{}", field.bulbs.len());
+        draw_text_ex(&total, 35.0, 35.0, TextParams::default());
+
+        next_frame().await
     }
 }
