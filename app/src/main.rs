@@ -11,7 +11,7 @@ const BULB_COLOR: Color = DARKGRAY;
 const SIDE: f32 = 1.;
 const START_POS: Vec2 = Vec2::new(1000., 1000.);
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 struct Bulb {
     pos: Vec2,
     new: bool,
@@ -19,7 +19,7 @@ struct Bulb {
 
 
 struct Field {
-    bulbs: Vec<Bulb>,
+    front_line: Vec<Bulb>,
     total: i32,
 }
 
@@ -49,7 +49,7 @@ impl Field {
         let mut bulbs = Vec::new();
         bulbs.push(Bulb::new(start_pos));
         Self {
-            bulbs,
+            front_line: bulbs,
             total: 1,
         }
     }
@@ -66,7 +66,7 @@ impl Field {
     }
 
     fn move_to(&mut self, pos: Vec2) {
-        let free_space = self.bulbs.iter().filter(
+        let free_space = self.front_line.iter().filter(
             |&bulb| bulb.pos == pos
         ).collect::<Vec<&Bulb>>().len() == 0;
 
@@ -74,38 +74,44 @@ impl Field {
 
 
         if free_space && can_step_by_sum {
-            self.bulbs.push(Bulb::new(pos))
+            self.front_line.push(Bulb::new(pos))
         }
     }
 
     fn expand(&mut self) -> bool {
         let mut have_new = false;
-        for i in 0..self.bulbs.len() {
-            if self.bulbs[i].new {
+        for i in 0..self.front_line.len() {
+            if self.front_line[i].new {
                 have_new = true;
 
-                let right_pos = Vec2::new(self.bulbs[i].pos.x + 1., self.bulbs[i].pos.y);
+                let right_pos = Vec2::new(self.front_line[i].pos.x + 1., self.front_line[i].pos.y);
                 self.move_to(right_pos);
 
                 // let left_pos = Vec2::new(self.bulbs[i].pos.x - 1., self.bulbs[i].pos.y);
                 // self.move_to(left_pos);
 
-                let up_pos = Vec2::new(self.bulbs[i].pos.x, self.bulbs[i].pos.y + 1.);
+                let up_pos = Vec2::new(self.front_line[i].pos.x, self.front_line[i].pos.y + 1.);
                 self.move_to(up_pos);
 
                 // let down_pos = Vec2::new(self.bulbs[i].pos.x, self.bulbs[i].pos.y - 1.);
                 // self.move_to(down_pos);
 
-                self.bulbs[i].new = false;
+                self.front_line[i].new = false;
             }
 
 
         }
+
+        self.front_line = self.front_line.iter().filter(
+            |&bulb| bulb.new
+        ).map(|b| *b).collect::<Vec<Bulb>>();
+
+
         have_new
     }
 
     fn draw(&self) {
-        for bulb in self.bulbs.iter() {
+        for bulb in self.front_line.iter() {
             bulb.draw();
         }
     }
@@ -125,7 +131,7 @@ async fn main() {
         field.draw();
         let active = field.expand();
 
-        let total = format!("{}", field.bulbs.len());
+        let total = format!("{}", field.front_line.len());
         draw_text_ex(&total, 35.0, 35.0, TextParams::default());
 
         next_frame().await
