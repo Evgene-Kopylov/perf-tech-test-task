@@ -134,16 +134,15 @@ async fn main() {
 
         field.draw();
         let active = field.expand();
+        let steps = format!("steps: {}", field.bulbs.len());
+        let time = format!("time: {:.1}", time_start.elapsed().as_secs_f64());
         if !active {
-            println!("steps: {}", field.bulbs.len());
-            println!("time: {}", time_start.elapsed().as_secs_f64());
+            println!("{}", steps);
+            println!("{}", time);
             break
         }
-
-        // let total = format!("steps: {}", field.bulbs.len());
-        // draw_text_ex(&total, 35.0, 35.0, TextParams::default());
-        // let time = format!("time: {}", time_start.elapsed().as_secs_f64());
-        // draw_text_ex(&time, 35.0, 75.0, TextParams::default());
+        draw_text_ex(&steps, 35.0, 35.0, TextParams::default());
+        draw_text_ex(&time, 35.0, 75.0, TextParams::default());
         next_frame().await
     }
 }
