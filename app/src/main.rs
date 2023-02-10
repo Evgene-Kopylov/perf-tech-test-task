@@ -20,6 +20,7 @@ struct Bulb {
 
 struct Field {
     bulbs: Vec<Bulb>,
+    total: i32,
 }
 
 
@@ -44,11 +45,12 @@ impl Bulb {
 
 
 impl Field {
-    fn start() -> Self {
+    fn start(start_pos: Vec2) -> Self {
         let mut bulbs = Vec::new();
-        bulbs.push(Bulb::new(START_POS));
+        bulbs.push(Bulb::new(start_pos));
         Self {
-            bulbs
+            bulbs,
+            total: 1,
         }
     }
 
@@ -69,6 +71,7 @@ impl Field {
         ).collect::<Vec<&Bulb>>().len() == 0;
 
         let can_step_by_sum: bool = self.sum_of_literal_digits(pos) < 26.;
+
 
         if free_space && can_step_by_sum {
             self.bulbs.push(Bulb::new(pos))
