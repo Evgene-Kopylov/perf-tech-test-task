@@ -73,9 +73,11 @@ impl Field {
         }
     }
 
-    fn expand(&mut self) {
+    fn expand(&mut self) -> bool {
+        let mut have_new = false;
         for i in 0..self.bulbs.len() {
             if self.bulbs[i].new {
+                have_new = true;
 
                 let right_pos = Vec2::new(self.bulbs[i].pos.x + 1., self.bulbs[i].pos.y);
                 self.move_to(right_pos);
@@ -93,6 +95,7 @@ impl Field {
             self.bulbs[i].new = false;
 
         }
+        have_new
     }
 
     fn draw(&self) {
@@ -110,14 +113,15 @@ async fn main() {
     let mut field = Field::start();
 
     loop {
-        field.expand();
-
         clear_background(GRAY);
 
         field.draw();
-        // if field.bulbs.len() > 16 {
-        //     break
-        // }
-        next_frame().await
+        let active = field.expand();
+        if !active {
+            println!("Результат: {}", field.bulbs.len());
+
+        } else {
+            next_frame().await
+        }
     }
 }
