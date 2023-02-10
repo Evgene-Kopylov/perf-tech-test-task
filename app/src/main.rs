@@ -20,6 +20,7 @@ struct Bulb {
 
 struct Field {
     front_line: Vec<Bulb>,
+    bulbs: Vec<Bulb>,
     total: i32,
 }
 
@@ -50,6 +51,7 @@ impl Field {
         bulbs.push(Bulb::new(start_pos));
         Self {
             front_line: bulbs,
+            bulbs: Vec::new(),
             total: 1,
         }
     }
@@ -97,6 +99,7 @@ impl Field {
                 // self.move_to(down_pos);
 
                 self.front_line[i].new = false;
+                self.bulbs.push(self.front_line[i].clone());
             }
 
 
@@ -111,7 +114,7 @@ impl Field {
     }
 
     fn draw(&self) {
-        for bulb in self.front_line.iter() {
+        for bulb in self.bulbs.iter() {
             bulb.draw();
         }
     }
@@ -131,7 +134,7 @@ async fn main() {
         field.draw();
         let active = field.expand();
 
-        let total = format!("{}", field.front_line.len());
+        let total = format!("{}", field.bulbs.len());
         draw_text_ex(&total, 35.0, 35.0, TextParams::default());
 
         next_frame().await
