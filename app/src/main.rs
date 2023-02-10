@@ -1,7 +1,7 @@
 #![allow(unused)]
 
 use macroquad::prelude::*;
-
+use std::time::{Instant};
 
 
 const GROUND_COLOR: Color = Color::new(0.8, 0.8, 0.8, 1.00);
@@ -125,6 +125,7 @@ impl Field {
 
 #[macroquad::main("breakout")]
 async fn main() {
+    let time_start = Instant::now();
     let mut field = Field::start(START_POS);
 
     loop {
@@ -133,10 +134,16 @@ async fn main() {
 
         field.draw();
         let active = field.expand();
+        if !active {
+            println!("steps: {}", field.bulbs.len());
+            println!("time: {}", time_start.elapsed().as_secs_f64());
+            break
+        }
 
-        let total = format!("{}", field.bulbs.len());
-        draw_text_ex(&total, 35.0, 35.0, TextParams::default());
-
+        // let total = format!("steps: {}", field.bulbs.len());
+        // draw_text_ex(&total, 35.0, 35.0, TextParams::default());
+        // let time = format!("time: {}", time_start.elapsed().as_secs_f64());
+        // draw_text_ex(&time, 35.0, 75.0, TextParams::default());
         next_frame().await
     }
 }
