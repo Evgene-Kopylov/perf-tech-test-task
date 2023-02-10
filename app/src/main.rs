@@ -4,24 +4,24 @@ use macroquad::prelude::*;
 use std::time::{Instant};
 
 
-const BULB_COLOR: Color = DARKGRAY;
+const STEP_COLOR: Color = DARKGRAY;
 const SIDE: f32 = 1.;
 const START_POS: Vec2 = Vec2::new(1000., 1000.);
 
 #[derive(Debug, Clone, Copy)]
-struct Bulb {
+struct Step {
     pos: Vec2,
     new: bool,
 }
 
 
 struct Field {
-    front_line: Vec<Bulb>,
-    bulbs: Vec<Bulb>,
+    front_line: Vec<Step>,
+    steps: Vec<Step>,
 }
 
 
-impl Bulb {
+impl Step {
     fn new(pos: Vec2) -> Self {
         Self {
             pos,
@@ -35,7 +35,7 @@ impl Bulb {
             self.pos.y - START_POS.y + 15.,
             SIDE,
             SIDE,
-            BULB_COLOR
+            STEP_COLOR
         );
     }
 }
@@ -43,11 +43,11 @@ impl Bulb {
 
 impl Field {
     fn start(start_pos: Vec2) -> Self {
-        let mut bulbs = Vec::new();
-        bulbs.push(Bulb::new(start_pos));
+        let mut steps = Vec::new();
+        steps.push(Step::new(start_pos));
         Self {
-            front_line: bulbs,
-            bulbs: Vec::new(),
+            front_line: steps,
+            steps: Vec::new(),
         }
     }
 
@@ -64,14 +64,14 @@ impl Field {
 
     fn move_to(&mut self, pos: Vec2) {
         let free_space = self.front_line.iter().filter(
-            |&bulb| bulb.pos == pos
-        ).collect::<Vec<&Bulb>>().len() == 0;
+            |&step| step.pos == pos
+        ).collect::<Vec<&Step>>().len() == 0;
 
         let can_step_by_sum: bool = self.sum_of_literal_digits(pos) < 26.;
 
 
         if free_space && can_step_by_sum {
-            self.front_line.push(Bulb::new(pos))
+            self.front_line.push(Step::new(pos))
         }
     }
 
@@ -84,33 +84,33 @@ impl Field {
                 let right_pos = Vec2::new(self.front_line[i].pos.x + 1., self.front_line[i].pos.y);
                 self.move_to(right_pos);
 
-                // let left_pos = Vec2::new(self.bulbs[i].pos.x - 1., self.bulbs[i].pos.y);
+                // let left_pos = Vec2::new(self.steps[i].pos.x - 1., self.steps[i].pos.y);
                 // self.move_to(left_pos);
 
                 let up_pos = Vec2::new(self.front_line[i].pos.x, self.front_line[i].pos.y + 1.);
                 self.move_to(up_pos);
 
-                // let down_pos = Vec2::new(self.bulbs[i].pos.x, self.bulbs[i].pos.y - 1.);
+                // let down_pos = Vec2::new(self.steps[i].pos.x, self.steps[i].pos.y - 1.);
                 // self.move_to(down_pos);
 
                 self.front_line[i].new = false;
-                self.bulbs.push(self.front_line[i].clone());
+                self.steps.push(self.front_line[i].clone());
             }
 
 
         }
 
         self.front_line = self.front_line.iter().filter(
-            |&bulb| bulb.new
-        ).map(|b| *b).collect::<Vec<Bulb>>();
+            |&step| step.new
+        ).map(|b| *b).collect::<Vec<Step>>();
 
 
         have_new
     }
 
     fn draw(&self) {
-        for bulb in self.bulbs.iter() {
-            bulb.draw();
+        for step in self.steps.iter() {
+            step.draw();
         }
     }
 
@@ -129,7 +129,7 @@ async fn main() {
 
         field.draw();
         let active = field.expand();
-        let steps = format!("steps: {}", field.bulbs.len());
+        let steps = format!("steps: {}", field.steps.len());
         let time = format!("time: {:.1}", time_start.elapsed().as_secs_f64());
         if !active {
             println!("{}", steps);
