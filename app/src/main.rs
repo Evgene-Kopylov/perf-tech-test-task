@@ -84,14 +84,8 @@ impl Field {
                 let right_pos = Vec2::new(self.front_line[i].pos.x + 1., self.front_line[i].pos.y);
                 self.move_to(right_pos);
 
-                // let left_pos = Vec2::new(self.steps[i].pos.x - 1., self.steps[i].pos.y);
-                // self.move_to(left_pos);
-
                 let up_pos = Vec2::new(self.front_line[i].pos.x, self.front_line[i].pos.y + 1.);
                 self.move_to(up_pos);
-
-                // let down_pos = Vec2::new(self.steps[i].pos.x, self.steps[i].pos.y - 1.);
-                // self.move_to(down_pos);
 
                 self.front_line[i].new = false;
                 self.steps.push(self.front_line[i].clone());
