@@ -87,17 +87,18 @@ impl Field {
                 let right_pos = Vec2::new(self.bulbs[i].pos.x + 1., self.bulbs[i].pos.y);
                 self.move_to(right_pos);
 
-                let left_pos = Vec2::new(self.bulbs[i].pos.x - 1., self.bulbs[i].pos.y);
-                self.move_to(left_pos);
+                // let left_pos = Vec2::new(self.bulbs[i].pos.x - 1., self.bulbs[i].pos.y);
+                // self.move_to(left_pos);
 
                 let up_pos = Vec2::new(self.bulbs[i].pos.x, self.bulbs[i].pos.y + 1.);
                 self.move_to(up_pos);
 
-                let down_pos = Vec2::new(self.bulbs[i].pos.x, self.bulbs[i].pos.y - 1.);
-                self.move_to(down_pos);
+                // let down_pos = Vec2::new(self.bulbs[i].pos.x, self.bulbs[i].pos.y - 1.);
+                // self.move_to(down_pos);
+
+                self.bulbs[i].new = false;
             }
 
-            self.bulbs[i].new = false;
 
         }
         have_new
