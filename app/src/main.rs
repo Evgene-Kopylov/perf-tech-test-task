@@ -1,13 +1,10 @@
-#![allow(unused)]
+// #![allow(unused)]
 
 use macroquad::prelude::*;
 use std::time::{Instant};
 
 
-const GROUND_COLOR: Color = Color::new(0.8, 0.8, 0.8, 1.00);
 const BULB_COLOR: Color = DARKGRAY;
-
-
 const SIDE: f32 = 1.;
 const START_POS: Vec2 = Vec2::new(1000., 1000.);
 
@@ -21,7 +18,6 @@ struct Bulb {
 struct Field {
     front_line: Vec<Bulb>,
     bulbs: Vec<Bulb>,
-    total: i32,
 }
 
 
@@ -52,7 +48,6 @@ impl Field {
         Self {
             front_line: bulbs,
             bulbs: Vec::new(),
-            total: 1,
         }
     }
 
