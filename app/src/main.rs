@@ -51,6 +51,9 @@ impl Field {
         }
     }
 
+    /// возвращает сумму цифр ы координате точки.
+    /// - не учитывает цифры после точки
+    /// - только для положительных координат
     fn sum_of_literal_digits(&self, pos: Vec2) -> f32 {
         let x = (pos.x as i32).to_string();
         let y = (pos.y as i32).to_string();
@@ -62,11 +65,14 @@ impl Field {
         s as f32
     }
 
+    /// совершает ход
     fn move_to(&mut self, pos: Vec2) {
+        // проверить не занята ли точка
         let free_space = self.front_line.iter().filter(
             |&step| step.pos == pos
         ).collect::<Vec<&Step>>().len() == 0;
 
+        // проверить сумму цифр координат
         let can_step_by_sum: bool = self.sum_of_literal_digits(pos) < 26.;
 
 
@@ -75,6 +81,7 @@ impl Field {
         }
     }
 
+    /// Расширение занятого пространства
     fn expand(&mut self) -> bool {
         let mut have_new = false;
         for i in 0..self.front_line.len() {
@@ -94,19 +101,21 @@ impl Field {
 
         }
 
+        // убрать из фронта совершенные ходы
         self.front_line = self.front_line.iter().filter(
             |&step| step.new
         ).map(|b| *b).collect::<Vec<Step>>();
-
 
         have_new
     }
 
     fn draw(&self) {
+        // отрисовка завершенных ходов
         for step in self.steps.iter() {
             step.draw(STEP_COLOR);
         }
 
+        // отрисовка линии фронта
         for step in self.front_line.iter() {
             step.draw(GOLD);
         }
@@ -125,9 +134,9 @@ async fn main() {
     loop {
         clear_background(GRAY);
 
-
         field.draw();
         let active = field.expand();
+
         let steps = format!("steps: {}", field.steps.len());
         let time = format!("time: {:.1}", time_start.elapsed().as_secs_f64());
         if !active {
