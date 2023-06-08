@@ -87,4 +87,4 @@ def main():
 
 
 if __name__ == "__main__":
-    assert main() == 148848
+    assert main() == 148848  # Время выполнения: 8.8
