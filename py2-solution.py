@@ -32,7 +32,7 @@ class Field:
         y = str(int(pos[1]))
         xy = x + y
         s = sum(int(c) for c in xy)
-        return float(s)
+        return s
 
     def move_to(self, pos):
         """
