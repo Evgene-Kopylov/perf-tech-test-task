@@ -38,7 +38,8 @@
 cargo run --release
 ```
 steps: 148848
-time: **5.1**
+time: 5.1
+
 ```terminal
 cargo run
 ```
